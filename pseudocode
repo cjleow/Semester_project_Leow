@@ -1,0 +1,38 @@
+# Semester project Leow
+# Pseudocode
+# Title: Gene Fates and Cell Type Evolution after Teleost Genome Duplication
+
+# Single-cell RNA-seq analysis pipeline
+# Step 1: obtain experimental data
+input: single-cell data from collaborators
+
+# Step 2: Download data
+download sc_RNA_data in monocle3 object
+
+# Step 3: store sc data on HPCC
+upload sc_RNA_data 
+
+# Step 4: Extract count data and metadata
+extract count_data from sc_RNA_data using Seurat in R
+extract metadata from sc_RNA_data using Seurat in R
+
+# Step 5: Perform sc analysis using Seurat in R
+1. create Seurat object using count_data and metadata
+2. normalize and scale data
+3. run PCA and generate Elbow plot
+4. batch correction
+5. find neighboring genes (nearest neighbor)
+6. cluster cells using Leiden algorithm 
+7. identify marker genes 
+8. visualize clusters using UMAP or t-SNE
+
+# Step 6: Save outputs on HPCC
+outputs: - DEGs in a table format (potential marker genes)
+         - UMAP plot (cluster visualization)
+         - PCA embeddings (clustered scRNA data)
+
+# Step 7: Trajectory or pseudotime analysis
+perform trajectory analysis using PCA embeddings
+save output: trajectory graph
+
+# end pipeline
