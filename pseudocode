@@ -1,38 +1,48 @@
-# Semester project Leow
-# Pseudocode
-# Title: Gene Fates and Cell Type Evolution after Teleost Genome Duplication
+scRNAseq_Analysis_Pipeline
 
-# Single-cell RNA-seq analysis pipeline
-# Step 1: obtain experimental data
-input: single-cell data from collaborators
+Input:
+    sc_RNA_data <- single-cell RNA-seq data from collaborators
 
-# Step 2: Download data
-download sc_RNA_data in monocle3 object
+Begin
 
-# Step 3: store sc data on HPCC
-upload sc_RNA_data 
+    # Step 1: Obtain experimental data
+    Receive(sc_RNA_data)
 
-# Step 4: Extract count data and metadata
-extract count_data from sc_RNA_data using Seurat in R
-extract metadata from sc_RNA_data using Seurat in R
+    # Step 2: Download data
+    sc_RNA_object <- Download(sc_RNA_data) as monocle3_object
 
-# Step 5: Perform sc analysis using Seurat in R
-1. create Seurat object using count_data and metadata
-2. normalize and scale data
-3. run PCA and generate Elbow plot
-4. batch correction
-5. find neighboring genes (nearest neighbor)
-6. cluster cells using Leiden algorithm 
-7. identify marker genes 
-8. visualize clusters using UMAP or t-SNE
+    # Step 3: Store on HPCC
+    Upload(sc_RNA_object, destination = "HPCC")
 
-# Step 6: Save outputs on HPCC
-outputs: - DEGs in a table format (potential marker genes)
-         - UMAP plot (cluster visualization)
-         - PCA embeddings (clustered scRNA data)
+    # Step 4: Extract data using Seurat in R
+    count_data <- ExtractCounts(sc_RNA_object)
+    metadata   <- ExtractMetadata(sc_RNA_object)
 
-# Step 7: Trajectory or pseudotime analysis
-perform trajectory analysis using PCA embeddings
-save output: trajectory graph
+    # Step 5: Perform single-cell analysis
+    seurat_obj <- CreateSeuratObject(count_data, metadata)
+    Normalize(seurat_obj)
+    ScaleData(seurat_obj)
+    RunPCA(seurat_obj)
+    PlotElbow(seurat_obj)
+    BatchCorrect(seurat_obj)
+    neighbors <- FindNeighbors(seurat_obj)
+    clusters  <- ClusterCells(seurat_obj, method = "Leiden")
+    marker_genes <- IdentifyMarkers(clusters)
+    Visualize(seurat_obj, method = "UMAP")
 
-# end pipeline
+    # Step 6: Save outputs
+    Save(DEGs_table, HPCC)
+    Save(UMAP_plot, HPCC)
+    Save(PCA_embeddings, HPCC)
+
+    # Step 7: Trajectory or pseudotime analysis
+    trajectory_graph <- PerformTrajectoryAnalysis(PCA_embeddings)
+    Save(trajectory_graph, HPCC)
+
+Overall output:
+    DEGs_table          <- Differentially expressed genes
+    UMAP_plot            <- Cluster visualization
+    PCA_embeddings       <- Clustered single-cell data
+    trajectory_graph     <- Pseudotime analysis result
+
+End
