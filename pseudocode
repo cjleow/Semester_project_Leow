@@ -18,17 +18,17 @@ Begin
     count_data <- ExtractCounts(sc_RNA_object)
     metadata   <- ExtractMetadata(sc_RNA_object)
 
-    # Step 5: Perform single-cell analysis
-    seurat_obj <- CreateSeuratObject(count_data, metadata)
-    Normalize(seurat_obj)
-    ScaleData(seurat_obj)
-    RunPCA(seurat_obj)
-    PlotElbow(seurat_obj)
-    BatchCorrect(seurat_obj)
-    neighbors <- FindNeighbors(seurat_obj)
-    clusters  <- ClusterCells(seurat_obj, method = "Leiden")
-    marker_genes <- IdentifyMarkers(clusters)
-    Visualize(seurat_obj, method = "UMAP")
+    # Step 5: Perform single-cell analysis using R package Seurat, the functions below are included in Seurat 
+    seurat_obj <- CreateSeuratObject(count_data, metadata) # create seurat object to start analysis
+    Normalize(seurat_obj) # normalize data so all cells are comparable
+    ScaleData(seurat_obj) # scale data so all gene expression are comparable
+    RunPCA(seurat_obj) # dimentionality reduction to capture the strongest and most correlated signals in the data
+    PlotElbow(seurat_obj) # visualize how many PCs capture the most variance in the data 
+    BatchCorrect(seurat_obj) # batch correct if necessary 
+    neighbors <- FindNeighbors(seurat_obj) # find cells that are most similar to one another by expression profile
+    clusters  <- ClusterCells(seurat_obj, method = "Leiden") # cluster cells based on similar expression profile
+    Visualize(seurat_obj, method = "UMAP") # visualize the clusters in UMAP
+    marker_genes <- IdentifyMarkers(clusters) # identify marker genes for each cluster and annotate cell type
 
     # Step 6: Save outputs
     Save(DEGs_table, HPCC)
@@ -40,9 +40,9 @@ Begin
     Save(trajectory_graph, HPCC)
 
 Overall output:
-    DEGs_table          <- Differentially expressed genes
-    UMAP_plot            <- Cluster visualization
-    PCA_embeddings       <- Clustered single-cell data
-    trajectory_graph     <- Pseudotime analysis result
+    DEGs_table          # Differentially expressed genes
+    UMAP_plot           # Cluster visualization
+    PCA_embeddings      # Clustered single-cell data
+    trajectory_graph    # Pseudotime analysis result
 
 End
