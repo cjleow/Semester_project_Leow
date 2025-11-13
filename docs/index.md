@@ -13,7 +13,7 @@ The count data is extracted from monocle 3 obj and stored in a variable named co
 The metadata is extracted from monocle 3 obj and stored in a variable named metadata
 
 Step 5: the main part of the analysis
-Most of the functions here are included in R package Seurat
+Most of the functions here are included in R package Seurat, detailed resources can be found here: https://cole-trapnell-lab.github.io/monocle3/docs/getting_started/
 Specific parameters may be used for different experiments
 
 Step 6: save outputs
