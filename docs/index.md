@@ -6,11 +6,15 @@ Input:
 The input for this pipeline is a monocle 3 object commonly used for scRNA-seq analysis. If you are working with raw reads, this website can be helpful: https://www.sc-best-practices.org/introduction/raw_data_processing.html
 
 Step 1 -3: obtain data
-The data is downloaded and stored on MSU HPCC
+1. receive the experimental single-cell dataset
+2. Download the data as a Monocle3 object
+3. Transfer and store he data on MSU HPCC (high performance computing cluster)
 
 Step 4: prepare for scRNA analysis
 The count data is extracted from monocle 3 obj and stored in a variable named count_data
+count_data <- ExtractCounts(monocle3_obj)
 The metadata is extracted from monocle 3 obj and stored in a variable named metadata
+metadata <- ExtractMetadata(monocle3_obj)
 
 Step 5: the main part of the analysis
 Most of the functions here are included in R package Seurat, detailed resources can be found here: https://cole-trapnell-lab.github.io/monocle3/docs/getting_started/
