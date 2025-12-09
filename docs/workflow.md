@@ -26,3 +26,5 @@ High-level flow:
 - **Outputs:** `output/` (CSV marker tables, PNG plots, Seurat object `.rds`, session info)
 - **Documentation site:** `docs/` rendered by MkDocs
 - **Tests:** `tests/testthat/`
+
+![Data flow diagram](assets/Leow_DFD_updated.png)
