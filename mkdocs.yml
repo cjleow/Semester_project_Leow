@@ -1,0 +1,12 @@
+site_name: Leow scRNA-seq Workflow
+theme:
+  name: material
+nav:
+  - Home: index.md
+  - Workflow: workflow.md
+  - Inputs: inputs.md
+  - Pipeline Steps: steps.md
+  - Scripts: scripts.md
+  - Tests: tests.md
+  - Outputs: outputs.md
+  - Reproduce: reproduce.md
