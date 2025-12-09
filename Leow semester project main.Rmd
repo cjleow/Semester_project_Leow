@@ -1,0 +1,154 @@
+---
+title: "Leow semester project"
+author: "Chi-Jing Leow"
+date: "2025-12-08"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+params:
+  input_dir: "data/embryo_11dpf"
+  project_name: "GarEmbryo_11dpf"
+  seed: 1
+  npcs: 30
+  elbow_ndims: 40
+  dims_use: 20
+  resolution: 1.0
+  min_pct: 0.25
+  logfc_threshold: 0.25
+  top_n_markers: 50
+  out_dir: "output"
+  run_tests: false
+---
+r setup
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+set.seed(params$seed)
+#setwd("~/CMSE890_602/Semester_project_Leow") #my local dir
+```
+
+load libraries
+```{r, message=FALSE, warning=FALSE}
+library(Seurat)
+library(dplyr)
+library(ggplot2)
+library(monocle3)
+library(patchwork)
+library(glmGamPoi)
+library(ggrepel)
+library(plyr)
+library(testthat)
+```
+
+source pipeline scripts
+```{r}
+source("R scripts/load_data.R")
+source("R scripts/convert.R")
+source("R scripts/preprocess_cluster.R")
+source("R scripts/markers.R")
+source("R scripts/annotate_save.R")
+```
+
+
+load monocle 3 object for 11dpf
+```{r}
+embryo_11dpf <- load_monocle_objects("data/embryo_11dpf")
+```
+
+Step 1: load monocle 3 object
+```{r, message=FALSE, warning=FALSE}
+cds <- load_monocle_objects(params$input_dir)
+cds
+```
+
+Step 2: convert to seurat obj
+```{r}
+seurat_obj_11dpf <- monocle_to_seurat(cds, project_name = params$project_name)
+seurat_obj_11dpf
+
+```
+
+Step 3: Preprocess + PCA (Principal Component Analysis)
+```{r}
+seurat_obj_11dpf <- run_preprocess(seurat_obj_11dpf, npcs = params$npcs)
+
+p_elbow <- ElbowPlot(seurat_obj_11dpf, ndims = params$elbow_ndims) +
+ggtitle("Elbow plot (PCA)")
+p_elbow
+
+```
+
+Step 4: Cluster + UMAP (Uniform Manifold Approximation and Projection)
+```{r}
+seurat_obj_11dpf <- run_cluster_umap(
+seurat_obj_11dpf,
+dims = 1:params$dims_use,
+resolution = params$resolution
+)
+
+p_umap_clusters <- DimPlot(seurat_obj_11dpf, group.by = "seurat_clusters", label = TRUE) +
+ggtitle("UMAP by Seurat clusters")
+p_umap_clusters
+```
+
+Step 5: Find marker genes
+```{r}
+markers <- find_markers(
+seurat_obj_11dpf,
+min_pct = params$min_pct,
+logfc_threshold = params$logfc_threshold
+)
+
+top_markers <- top_markers(markers, n = params$top_n_markers)
+dplyr::glimpse(top_markers)
+
+```
+
+Step 6: Cell type annotation
+```{r}
+New_ident_11dpf_fine <- setNames(
+  c(
+    "Skeletal muscle (fast-twitch trunk)",              # ryr3, neb, ttn.2, mef2cb, dmd
+    "Cartilage / fibrocartilage-like mesenchyme",       # col1a1b
+    "CNS neuron (synaptic adhesion–rich)",              # nrxn1a, adgrl1a, gabra2a, camta1a, lsamp
+    "Myofiber / sarcomeric muscle",                     # myoz1a, actc2, tpm1, ckma, myl1
+    "CNS neuron (grin2aa+ spinal/brain)",               # grin2aa, ryr1b, jph1a, neb, ttn.2
+    "Skeletal muscle (sarcomeric, mixed fiber type)",   # tpm1, myl1, ckma, actc1a, eno1a
+    "Cardiomyocyte (ventricular/slow muscle)",          # myh7ba, mybpc1, myom3, tnnc1b, tnni1a
+    "Peripheral glia / NMJ-associated Schwann-like",    # pmp22b, xirp2b, klhl31, pdlim7, actc1a
+    "Multiciliated epithelial cell",                    # pkhd1l1.1, dnah9, dnah5l, dync2h1, cfap299
+    "Wnt+ fibro-adipogenic / tendon mesenchyme"         # tpm4a, myl4, pdgfc, itga9, adipoqa
+  ),
+  0:9  # cluster IDs at 11 dpf
+)
+
+mapping <- New_ident_11dpf_fine
+if (!is.null(mapping)) {
+seurat_obj_11dpf <- annotate_clusters(seurat_obj_11dpf, mapping = mapping, label_col = "New_ident")
+p_umap_annot <- DimPlot(seurat_obj_11dpf, group.by = "New_ident", label = TRUE) +
+ggtitle("UMAP by annotated cell type")
+p_umap_annot}
+
+```
+
+Step 7: save outputs
+```{r}
+dir.create(params$out_dir, showWarnings = FALSE, recursive = TRUE)
+
+save_outputs(
+  seu = seurat_obj_11dpf,
+  markers = markers,
+  top_markers = top_markers,
+  out_dir = params$out_dir,
+  plots = list(
+    elbow = p_elbow,
+    umap_clusters = p_umap_clusters))
+
+cat("Saved outputs to:", normalizePath(params$out_dir), "\n")
+
+```
+
+```{r}
+sessionInfo()
+```
