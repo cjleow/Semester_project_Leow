@@ -19,7 +19,7 @@ params:
   logfc_threshold: 0.25
   top_n_markers: 50
   out_dir: "output"
-  run_tests: false
+  run_tests: true
 ---
 r setup
 ```{r setup, include=FALSE}
@@ -38,7 +38,6 @@ library(patchwork)
 library(glmGamPoi)
 library(ggrepel)
 library(plyr)
-library(testthat)
 ```
 
 source pipeline scripts
@@ -50,10 +49,16 @@ source("R scripts/markers.R")
 source("R scripts/annotate_save.R")
 ```
 
+Run tests (testthat)
+```{r run-tests, eval=isTRUE(params$run_tests)}
+if (!requireNamespace("testthat", quietly = TRUE)) {
+  stop("testthat is not installed. Install with install.packages('testthat').")
+}
+if (!dir.exists("tests/testthat")) {
+  stop("No tests found at tests/testthat/.")
+}
+testthat::test_dir("tests/testthat", reporter = "summary")
 
-load monocle 3 object for 11dpf
-```{r}
-embryo_11dpf <- load_monocle_objects("data/embryo_11dpf")
 ```
 
 Step 1: load monocle 3 object
