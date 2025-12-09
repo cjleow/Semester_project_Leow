@@ -3,7 +3,6 @@
 All results from the pipeline are saved to the output directory specified in `main.Rmd`:
 
 - `params$out_dir` (default: `output/`)
-
 This makes the workflow reproducible because you can re-run the pipeline and compare the saved artifacts.
 
 ---
@@ -34,7 +33,7 @@ After a successful run, you should see files like:
 
 ---
 
-## How to verify the run worked
+## How to verify the run worked?
 
 1. **Plots exist and look reasonable**
    - `elbow.png` shows a clear “elbow” or diminishing variance after some PCs.

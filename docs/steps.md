@@ -99,3 +99,26 @@ Saves:
 
 Implemented in:
 - `R scripts/annotate_save.R` → `save_outputs()`
+
+## Optional / future extension: trajectory (pseudotime) analysis
+
+This project’s current reproducible workflow focuses on:
+- preprocessing (SCTransform + PCA),
+- clustering + UMAP visualization,
+- marker gene identification,
+- and manual cluster-to-cell-type annotation.
+
+A future extension of this workflow is **trajectory (pseudotime) analysis**, which is useful when cells can be ordered along a developmental or differentiation progression (for example, across developmental timepoints such as 11 dpf and other stages).
+
+### Planned approach
+- Use Monocle3 trajectory learning (graph-based trajectory inference) or Seurat + Monocle3 integration.
+- Leverage PCA/UMAP embeddings and/or selected features to learn a trajectory graph.
+- Assign pseudotime values to cells and visualize gene expression changes along pseudotime.
+
+### Expected outputs (when implemented)
+- Trajectory graph visualization
+- Pseudotime values per cell (table)
+- Pseudotime heatmaps / gene trends for marker genes of interest
+
+### Notes
+Trajectory inference is not always appropriate for every dataset (e.g., if the biology is not continuous or if batch effects dominate). If added, the workflow will document assumptions and include sanity checks to confirm a meaningful trajectory signal.

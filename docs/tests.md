@@ -1,10 +1,9 @@
 # Tests
 
-This project uses **testthat** to test key functions in the pipeline.
+This project uses R package **testthat** to test key functions in the pipeline.
 
 ## Where tests live
-
-Tests are in:
+Tests are located in:
 
 `tests/testthat/`
 
@@ -15,7 +14,6 @@ Example files:
 (Additional tests can be added as the workflow grows.)
 
 ## What is tested
-
 The tests are lightweight and designed to run quickly. They verify that:
 
 - Loading a `cell_data_set` from `cds_object.rds` works
