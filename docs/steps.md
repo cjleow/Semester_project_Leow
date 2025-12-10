@@ -110,7 +110,7 @@ This project’s current reproducible workflow focuses on:
 
 A future extension of this workflow is **trajectory (pseudotime) analysis**, which is useful when cells can be ordered along a developmental or differentiation progression (for example, across developmental timepoints such as 11 dpf and other stages).
 
-### Planned approach
+### Planned approach (not included in this workflow)
 - Use Monocle3 trajectory learning (graph-based trajectory inference) or Seurat + Monocle3 integration.
 - Leverage PCA/UMAP embeddings and/or selected features to learn a trajectory graph.
 - Assign pseudotime values to cells and visualize gene expression changes along pseudotime.
